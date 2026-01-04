@@ -5,7 +5,7 @@
 **Description:**  
 A small project to fetch and display weather data using public APIs. Demonstrates frontend skills and API integration.
 
-**Live Demo:** [Add link if deployed]
+**Live Demo:** https://seven25-ui.github.io/Weather-app/
 
 **Features:**  
 - Displays current weather based on user input location  
