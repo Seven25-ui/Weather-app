@@ -1,11 +1,11 @@
 /* ---------------- BASE ---------------- */
 *,
 *::before,
-*::after { /* ⚡ Maayo nga practice: apil ang pseudo-elements sa box-sizing */
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif; /* ⚡ Mas modern nga font fallback */
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 body {
@@ -14,12 +14,10 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    /* ⚡ Giusab gikan sa overflow: hidden ngadto sa overflow-x: hidden 
-       para dili maputol ang content kung mag-scroll ang user */
     overflow-x: hidden;
     position: relative;
     transition: background 2s ease;
-    background: #4facfe; /* ⚡ Fallback color kung wala pa ni-load ang gradient */
+    background: #4facfe;
 }
 
 /* ---------------- PARTICLES ---------------- */
@@ -29,7 +27,7 @@ body {
     opacity: 0.7;
     pointer-events: none;
     animation: floatParticle linear infinite;
-    will-change: transform; /* ⚡ Performance: pahibaw-a ang browser nga mo-animate ni */
+    will-change: transform;
 }
 
 @keyframes floatParticle {
@@ -41,7 +39,7 @@ body {
 .container {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* ⚡ Para mo-work sa Safari */
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 30px;
     width: 100%;
@@ -49,14 +47,19 @@ body {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: opacity 0.3s ease, transform 0.3s ease; /* ⚡ Gikuha ang 'all' kay makapahinay */
+    transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 10;
     position: relative;
 }
 
-/* ⚡ Bag-o: Focus state para sa accessibility */
 .container:focus-within {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(79, 172, 254, 0.5);
+}
+
+h1 {
+    color: #fff;
+    font-size: 28px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* ---------------- SEARCH BOX ---------------- */
@@ -80,9 +83,9 @@ body {
 }
 
 .search-box input:focus {
-    outline: none; /* ⚡ Tangtanga ang default outline */
+    outline: none;
     border-color: #4facfe;
-    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3); /* ⚡ Pero butangi og custom focus ring */
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
 }
 
 .search-box input::placeholder { color: rgba(0, 0, 0, 0.6); }
@@ -100,15 +103,15 @@ body {
 }
 
 .search-box button:hover { background: #2696ff; }
-.search-box button:active { transform: scale(0.97); } /* ⚡ Click feedback */
+.search-box button:active { transform: scale(0.97); }
 .search-box button:focus-visible {
-    outline: 3px solid #fff; /* ⚡ Accessibility: visible focus ring */
+    outline: 3px solid #fff;
     outline-offset: 2px;
 }
 
 /* ---------------- WEATHER BOX ---------------- */
 .weather-box { margin-top: 25px; }
-.hidden { display: none; }
+.hidden { display: none !important; }
 
 .weather-box h3 {
     font-size: 28px;
@@ -133,18 +136,20 @@ body {
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2); /* Fallback kung wala pay image */
 }
 
+/* ⚡ Update: object-fit para mo-sakto ang image */
 .icon {
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
+    object-fit: cover; 
+    object-position: center;
     border-radius: 15px;
     animation: float 3s ease-in-out infinite;
     transition: opacity 0.3s ease;
     opacity: 1;
-    will-change: transform; /* ⚡ Performance */
+    will-change: transform;
 }
 
 @keyframes float {
@@ -152,11 +157,8 @@ body {
     50% { transform: translateY(-5px); }
 }
 
-/* ⚡ Bag-o: Prefers-reduced-motion para sa mga user nga gusto og less animation */
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
@@ -209,14 +211,12 @@ body {
 
 .lightning {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: rgba(255, 255, 255, 0.5);
     opacity: 0;
     animation: flash 0.2s ease 0s 1 forwards;
-    pointer-events: none; /* ⚡ Dili mo-intercept sa clicks */
+    pointer-events: none;
 }
 @keyframes flash {
     0% { opacity: 0; }
@@ -226,10 +226,8 @@ body {
 
 .sun {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80px;
-    height: 80px;
+    top: 50%; left: 50%;
+    width: 80px; height: 80px;
     background: radial-gradient(circle, #fff200, #ffc700);
     border-radius: 50%;
     transform: translate(-50%, -50%);
@@ -248,8 +246,7 @@ body {
 
 .wind {
     position: absolute;
-    width: 60px;
-    height: 2px;
+    width: 60px; height: 2px;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 2px;
     top: 50%;
@@ -261,11 +258,10 @@ body {
     100% { transform: translateX(600px); }
 }
 
-/* ⚡ Bag-o: Loading spinner (para sa JS loading state) */
+/* ---------------- LOADING & ERROR ---------------- */
 .loading-spinner {
     display: inline-block;
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     border: 4px solid rgba(255, 255, 255, 0.3);
     border-top-color: #fff;
     border-radius: 50%;
@@ -276,7 +272,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ⚡ Bag-o: Error message styling */
 .error-message {
     background: rgba(255, 77, 77, 0.2);
     border: 1px solid rgba(255, 77, 77, 0.5);
@@ -287,13 +282,10 @@ body {
     font-size: 16px;
 }
 
-/* ⚡ Bag-o: Accessible hidden class (para sa screen readers) */
 .sr-only {
     position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
@@ -302,38 +294,16 @@ body {
 
 /* ---------------- MOBILE ---------------- */
 @media (max-width: 600px) {
-    .container {
-        max-width: 100%;
-        padding: 20px;
-    }
-    .search-box {
-        flex-direction: column;
-    }
-    .search-box button {
-        width: 100%;
-        font-size: 16px;
-        padding: 12px;
-    }
-    .search-box input {
-        font-size: 16px;
-    }
-    .weather-box h3 {
-        font-size: 24px;
-    }
-    .weather-box p {
-        font-size: 16px;
-    }
-    .icon-wrapper {
-        height: 200px;
-    }
+    .container { max-width: 100%; padding: 20px; }
+    .search-box { flex-direction: column; }
+    .search-box button { width: 100%; font-size: 16px; padding: 12px; }
+    .search-box input { font-size: 16px; }
+    .weather-box h3 { font-size: 24px; }
+    .weather-box p { font-size: 16px; }
+    .icon-wrapper { height: 200px; }
 }
 
-/* ⚡ Bag-o: Landscape mode sa mobile (kanang horizontal ang phone) */
 @media (max-height: 500px) and (orientation: landscape) {
-    .icon-wrapper {
-        height: 150px;
-    }
-    .container {
-        padding: 15px;
-    }
+    .icon-wrapper { height: 150px; }
+    .container { padding: 15px; }
 }
