@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO: Mas descriptive ang title ug naay description -->
     <title>Ultimate Weather App | Real-time Forecast</title>
     <meta name="description" content="A simple and responsive weather app to check real-time weather conditions in any city.">
     <link rel="stylesheet" href="style.css">
@@ -11,15 +10,13 @@
 <body>
 
 <div class="container">
-    <!-- Semantic header -->
     <header>
         <h1>🌤 Ultimate Weather App</h1>
     </header>
 
     <main>
-        <!-- Form imbes div: Para mo-trigger ang search inig pindot sa 'Enter' key -->
-        <form class="search-box" id="searchForm" onsubmit="handleSearch(event)">
-            <!-- Added label para sa accessibility (hidden visually pero mabasa sa screen readers) -->
+        <!-- Form para mo-trigger ang search inig pindot sa 'Enter' key -->
+        <form class="search-box" id="searchForm">
             <label for="cityInput" class="sr-only">Enter city name</label>
             <input 
                 type="text" 
@@ -31,25 +28,23 @@
             <button type="submit" id="searchBtn">Search</button>
         </form>
 
-        <!-- Added aria-live para mo-announce ang screen reader kung naay bag-ong weather data -->
+        <!-- Weather Info Section -->
         <section id="weatherInfo" class="weather-box hidden" aria-live="polite">
             <h3 id="cityName"></h3>
-
             <div id="weatherIcon" class="icon-wrapper">
-                <!-- Ibutang ang alt text sa image later sa JS -->
+                <!-- Image icon (para sa JS src update) -->
                 <img class="icon" id="iconImg" src="" alt="Weather icon">
             </div>
-
             <p id="temp"></p>
             <p id="desc"></p>
             <p id="humidity"></p>
         </section>
 
-        <!-- Loading indicator (para kahibaw ang user nga nag-fetch pa) -->
-        <div id="loading" class="hidden">Loading weather data...</div>
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading-spinner hidden"></div>
         
-        <!-- Error message area -->
-        <p id="errorMsg" class="error hidden"></p>
+        <!-- Error Message -->
+        <p id="errorMsg" class="error-message hidden"></p>
     </main>
 </div>
 
