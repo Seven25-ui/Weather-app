@@ -1,32 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Weather App</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO: Mas descriptive ang title ug naay description -->
+    <title>Ultimate Weather App | Real-time Forecast</title>
+    <meta name="description" content="A simple and responsive weather app to check real-time weather conditions in any city.">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-    <h2>🌤 Ultimate Weather App</h2>
+    <!-- Semantic header -->
+    <header>
+        <h1>🌤 Ultimate Weather App</h1>
+    </header>
 
-    <div class="search-box">
-        <input type="text" id="cityInput" placeholder="Enter city...">
-        <button onclick="getWeather()">Search</button>
-    </div>
+    <main>
+        <!-- Form imbes div: Para mo-trigger ang search inig pindot sa 'Enter' key -->
+        <form class="search-box" id="searchForm" onsubmit="handleSearch(event)">
+            <!-- Added label para sa accessibility (hidden visually pero mabasa sa screen readers) -->
+            <label for="cityInput" class="sr-only">Enter city name</label>
+            <input 
+                type="text" 
+                id="cityInput" 
+                placeholder="Enter city..." 
+                required 
+                autocomplete="off"
+            >
+            <button type="submit" id="searchBtn">Search</button>
+        </form>
 
-    <div id="weatherInfo" class="weather-box hidden">
-        <h3 id="cityName"></h3>
+        <!-- Added aria-live para mo-announce ang screen reader kung naay bag-ong weather data -->
+        <section id="weatherInfo" class="weather-box hidden" aria-live="polite">
+            <h3 id="cityName"></h3>
 
-        <div id="weatherIcon" class="icon-wrapper">
-            <div class="icon"></div>
-        </div>
+            <div id="weatherIcon" class="icon-wrapper">
+                <!-- Ibutang ang alt text sa image later sa JS -->
+                <img class="icon" id="iconImg" src="" alt="Weather icon">
+            </div>
 
-        <p id="temp"></p>
-        <p id="desc"></p>
-        <p id="humidity"></p>
-    </div>
+            <p id="temp"></p>
+            <p id="desc"></p>
+            <p id="humidity"></p>
+        </section>
+
+        <!-- Loading indicator (para kahibaw ang user nga nag-fetch pa) -->
+        <div id="loading" class="hidden">Loading weather data...</div>
+        
+        <!-- Error message area -->
+        <p id="errorMsg" class="error hidden"></p>
+    </main>
 </div>
 
 <script src="script.js"></script>
