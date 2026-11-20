@@ -5,18 +5,18 @@ const cityNameEl = document.getElementById("cityName");
 const tempEl = document.getElementById("temp");
 const descEl = document.getElementById("desc");
 const humidityEl = document.getElementById("humidity");
-const iconEl = document.querySelector("#weatherIcon .icon");
-const containerEl = document.querySelector(".container");
 const bodyEl = document.body;
 const iconWrapper = document.getElementById("weatherIcon");
+const iconImg = document.getElementById("iconImg"); // ⚡ Use the img element
+const loadingEl = document.getElementById("loading");
+const errorEl = document.getElementById("errorMsg");
 
 // ⚠️ IMPORTANT: Ibutang ni sa .env file or backend. Ayaw i-commit sa GitHub!
-// Para sa demo lang ni. I-rotate/revoke dayon.
 const API_KEY = "8a252f61c3bb5b844bf4473729978c30"; 
 
 /* ---------------- PARTICLES ---------------- */
 function createParticles(num) {
-    const fragment = document.createDocumentFragment(); // ⚡ Performance: gamit fragment para isa ra ka reflow
+    const fragment = document.createDocumentFragment();
     for (let i = 0; i < num; i++) {
         const p = document.createElement("div");
         p.classList.add("particle");
@@ -33,7 +33,6 @@ function createParticles(num) {
 createParticles(50);
 
 /* ---------------- WEATHER EFFECTS ---------------- */
-// Gihimuan nako og generic helper para dili balik-balik ang code
 function clearEffects(className) {
     document.querySelectorAll(`.${className}`).forEach(el => el.remove());
 }
@@ -124,7 +123,7 @@ function playSound(weatherMain) {
     currentSound = new Audio(soundFile);
     currentSound.loop = true;
     currentSound.volume = 0.4;
-    currentSound.play().catch(err => console.warn("Sound autoplay blocked:", err)); // ⚡ Handle browser autoplay restrictions
+    currentSound.play().catch(err => console.warn("Sound autoplay blocked:", err));
 }
 
 function stopSound() {
@@ -138,46 +137,48 @@ function stopSound() {
 /* ---------------- GET WEATHER ---------------- */
 async function getWeather() {
     const city = cityInput.value.trim();
+    
     if (city === "") {
-        alert("Enter city name bai");
+        errorEl.textContent = "Please enter a city name.";
+        errorEl.classList.remove("hidden");
         return;
     }
+
+    // Reset UI
+    loadingEl.classList.remove("hidden");
+    errorEl.classList.add("hidden");
+    weatherInfo.classList.add("hidden");
 
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`;
     
     try {
         const res = await fetch(url);
         
-        // ⚡ Maayo nga practice: i-check ang response.ok bag-o mag-parse og JSON
         if (!res.ok) {
-            if (res.status === 404) throw new Error("City not found bai!");
-            if (res.status === 401) throw new Error("Invalid API key. Palihog check.");
-            if (res.status === 429) throw new Error("Too many requests. Hulat sa bai.");
+            if (res.status === 404) throw new Error("City not found! Please try again.");
+            if (res.status === 401) throw new Error("Invalid API key. Please check.");
+            if (res.status === 429) throw new Error("Too many requests. Please wait.");
             throw new Error("Something went wrong.");
         }
 
         const data = await res.json();
-
-        iconEl.style.opacity = 0;
-        containerEl.style.opacity = 0.8;
         
-        setTimeout(() => {
-            cityNameEl.innerText = data.name;
-            tempEl.innerText = "Temperature: " + Math.round(data.main.temp) + "°C"; // ⚡ Round the temp
-            descEl.innerText = "Condition: " + data.weather[0].description;
-            humidityEl.innerText = "Humidity: " + data.main.humidity + "%";
+        cityNameEl.textContent = data.name;
+        tempEl.textContent = "Temperature: " + Math.round(data.main.temp) + "°C";
+        descEl.textContent = "Condition: " + data.weather[0].description;
+        humidityEl.textContent = "Humidity: " + data.main.humidity + "%";
 
-            updateIcon(data.weather[0].main);
-            updateBackground(data.weather[0].main);
+        updateIcon(data.weather[0].main);
+        updateBackground(data.weather[0].main);
 
-            weatherInfo.classList.remove("hidden");
-            iconEl.style.opacity = 1;
-            containerEl.style.opacity = 1;
-        }, 300);
+        weatherInfo.classList.remove("hidden");
 
     } catch (error) {
-        alert(error.message);
+        errorEl.textContent = error.message;
+        errorEl.classList.remove("hidden");
         console.error("Weather fetch error:", error);
+    } finally {
+        loadingEl.classList.add("hidden");
     }
 }
 
@@ -186,7 +187,6 @@ function updateIcon(weatherMain) {
     const w = weatherMain.toLowerCase();
     let imgUrl = "";
 
-    // Clear all effects first
     ["rain-drop", "snowflake", "cloud", "sun", "wind", "lightning"].forEach(clearEffects);
 
     if (w.includes("cloud")) {
@@ -213,7 +213,10 @@ function updateIcon(weatherMain) {
         createSun();
     }
 
-    iconEl.style.backgroundImage = `url('${imgUrl}')`;
+    // ⚡ Correct way to set image source
+    iconImg.src = imgUrl;
+    iconImg.alt = weatherMain + " weather";
+    
     playSound(weatherMain);
 }
 
@@ -241,3 +244,9 @@ function updateBackground(weatherMain) {
     }
     if (!matched) bodyEl.style.background = "linear-gradient(135deg, #4facfe, #00f2fe)";
 }
+
+/* ---------------- EVENT LISTENER ---------------- */
+document.getElementById("searchForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Pugngan ang page reload
+    getWeather();
+});
