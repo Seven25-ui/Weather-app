@@ -7,7 +7,7 @@ const descEl = document.getElementById("desc");
 const humidityEl = document.getElementById("humidity");
 const bodyEl = document.body;
 const iconWrapper = document.getElementById("weatherIcon");
-const iconImg = document.getElementById("iconImg"); // ⚡ Use the img element
+const iconImg = document.getElementById("iconImg");
 const loadingEl = document.getElementById("loading");
 const errorEl = document.getElementById("errorMsg");
 
@@ -213,25 +213,46 @@ function updateIcon(weatherMain) {
         createSun();
     }
 
-    // ⚡ Correct way to set image source
     iconImg.src = imgUrl;
     iconImg.alt = weatherMain + " weather";
+    
+    // ⚡ Sync the weather photo as a blurred background layer
+    bodyEl.style.setProperty("--weather-photo", `url('${imgUrl}')`);
     
     playSound(weatherMain);
 }
 
-/* ---------------- UPDATE BACKGROUND ---------------- */
+/* ---------------- UPDATE BACKGROUND (SYNCED ANIMATION) ---------------- */
 function updateBackground(weatherMain) {
     const w = weatherMain.toLowerCase();
+    
+    // ⚡ Tangtanga ang daan nga weather classes
+    bodyEl.classList.remove(
+        "weather-sun", "weather-cloud", "weather-rain", 
+        "weather-snow", "weather-storm", "weather-wind"
+    );
+
+    // ⚡ Determina ang weather class
+    let weatherClass = "";
+    if (w.includes("sun") || w.includes("clear")) weatherClass = "weather-sun";
+    else if (w.includes("cloud")) weatherClass = "weather-cloud";
+    else if (w.includes("rain") || w.includes("drizzle")) weatherClass = "weather-rain";
+    else if (w.includes("snow")) weatherClass = "weather-snow";
+    else if (w.includes("storm") || w.includes("thunder")) weatherClass = "weather-storm";
+    else if (w.includes("wind")) weatherClass = "weather-wind";
+
+    if (weatherClass) bodyEl.classList.add(weatherClass);
+
+    // ⚡ Set gradient fallback (para sa color)
     const gradients = {
-        sun: "linear-gradient(135deg, #ffe259, #ffa751)",
-        cloud: "linear-gradient(135deg, #d7dde5, #a3b1c6)",
-        rain: "linear-gradient(135deg, #4e6e8e, #22303d)",
-        drizzle: "linear-gradient(135deg, #4e6e8e, #22303d)",
-        snow: "linear-gradient(135deg, #e6f0fa, #b9d3eb)",
-        storm: "linear-gradient(135deg, #3a3a3a, #0a0a0a)",
-        thunder: "linear-gradient(135deg, #3a3a3a, #0a0a0a)",
-        wind: "linear-gradient(135deg, #89f7fe, #66a6ff)"
+        sun: "linear-gradient(135deg, #ffe259, #ffa751, #ff6a00)",
+        cloud: "linear-gradient(135deg, #d7dde5, #a3b1c6, #6b7c93)",
+        rain: "linear-gradient(135deg, #4e6e8e, #22303d, #0f1a24)",
+        drizzle: "linear-gradient(135deg, #4e6e8e, #22303d, #0f1a24)",
+        snow: "linear-gradient(135deg, #e6f0fa, #b9d3eb, #7fa8d1)",
+        storm: "linear-gradient(135deg, #3a3a3a, #0a0a0a, #000000)",
+        thunder: "linear-gradient(135deg, #3a3a3a, #0a0a0a, #000000)",
+        wind: "linear-gradient(135deg, #89f7fe, #66a6ff, #3a8dde)"
     };
 
     let matched = false;
@@ -242,7 +263,7 @@ function updateBackground(weatherMain) {
             break;
         }
     }
-    if (!matched) bodyEl.style.background = "linear-gradient(135deg, #4facfe, #00f2fe)";
+    if (!matched) bodyEl.style.background = "linear-gradient(135deg, #4facfe, #00f2fe, #0072ff)";
 }
 
 /* ---------------- EVENT LISTENER ---------------- */
