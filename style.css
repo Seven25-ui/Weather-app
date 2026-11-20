@@ -1,9 +1,11 @@
 /* ---------------- BASE ---------------- */
-* {
+*,
+*::before,
+*::after { /* ⚡ Maayo nga practice: apil ang pseudo-elements sa box-sizing */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif; /* ⚡ Mas modern nga font fallback */
 }
 
 body {
@@ -12,9 +14,12 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    overflow: hidden;
+    /* ⚡ Giusab gikan sa overflow: hidden ngadto sa overflow-x: hidden 
+       para dili maputol ang content kung mag-scroll ang user */
+    overflow-x: hidden;
     position: relative;
-    transition: background 2s ease; /* smooth background change */
+    transition: background 2s ease;
+    background: #4facfe; /* ⚡ Fallback color kung wala pa ni-load ang gradient */
 }
 
 /* ---------------- PARTICLES ---------------- */
@@ -24,6 +29,7 @@ body {
     opacity: 0.7;
     pointer-events: none;
     animation: floatParticle linear infinite;
+    will-change: transform; /* ⚡ Performance: pahibaw-a ang browser nga mo-animate ni */
 }
 
 @keyframes floatParticle {
@@ -35,16 +41,22 @@ body {
 .container {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* ⚡ Para mo-work sa Safari */
     border-radius: 20px;
     padding: 30px;
     width: 100%;
     max-width: 600px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease, opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* ⚡ Gikuha ang 'all' kay makapahinay */
     z-index: 10;
     position: relative;
+}
+
+/* ⚡ Bag-o: Focus state para sa accessibility */
+.container:focus-within {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(79, 172, 254, 0.5);
 }
 
 /* ---------------- SEARCH BOX ---------------- */
@@ -58,14 +70,22 @@ body {
     flex: 1;
     padding: 14px;
     border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     font-size: 18px;
-    background: rgba(255,255,255,0.3);
+    background: rgba(255, 255, 255, 0.3);
     color: #000;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.search-box input::placeholder { color: rgba(0,0,0,0.6); }
+.search-box input:focus {
+    outline: none; /* ⚡ Tangtanga ang default outline */
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3); /* ⚡ Pero butangi og custom focus ring */
+}
+
+.search-box input::placeholder { color: rgba(0, 0, 0, 0.6); }
 
 .search-box button {
     padding: 14px 20px;
@@ -75,10 +95,16 @@ body {
     color: white;
     cursor: pointer;
     font-size: 18px;
-    transition: background 0.3s ease;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.1s ease;
 }
 
 .search-box button:hover { background: #2696ff; }
+.search-box button:active { transform: scale(0.97); } /* ⚡ Click feedback */
+.search-box button:focus-visible {
+    outline: 3px solid #fff; /* ⚡ Accessibility: visible focus ring */
+    outline-offset: 2px;
+}
 
 /* ---------------- WEATHER BOX ---------------- */
 .weather-box { margin-top: 25px; }
@@ -88,48 +114,226 @@ body {
     font-size: 28px;
     margin-bottom: 12px;
     color: #fff;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .weather-box p {
     font-size: 18px;
     margin: 5px 0;
     color: #fff;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* ---------------- ICON WRAPPER ---------------- */
-.icon-wrapper { width: 100%; height: 300px; margin: 15px 0; position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-.icon { width: 100%; height: 100%; background-size: cover; background-position: center; border-radius: 15px; animation: float 3s ease-in-out infinite; transition: opacity 0.3s ease; opacity: 1; }
-@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.icon-wrapper {
+    width: 100%;
+    height: 300px;
+    margin: 15px 0;
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.icon {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    animation: float 3s ease-in-out infinite;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+    will-change: transform; /* ⚡ Performance */
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* ⚡ Bag-o: Prefers-reduced-motion para sa mga user nga gusto og less animation */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
 
 /* ---------------- WEATHER ANIMATIONS ---------------- */
-.rain-drop { position: absolute; width: 2px; height: 10px; background: rgba(255,255,255,0.7); animation: fall linear infinite; }
-@keyframes fall { 0% { transform: translateY(0) } 100% { transform: translateY(500px) } }
+.rain-drop {
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    animation: fall linear infinite;
+    will-change: transform;
+}
+@keyframes fall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(500px); }
+}
 
-.snowflake { position: absolute; top: -10px; width: 6px; height: 6px; background: rgba(255,255,255,0.8); border-radius: 50%; animation: fallSnow linear infinite; }
-@keyframes fallSnow { 0% { transform: translateY(0) translateX(0); } 100% { transform: translateY(500px) translateX(50px); } }
+.snowflake {
+    position: absolute;
+    top: -10px;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: fallSnow linear infinite;
+    will-change: transform;
+}
+@keyframes fallSnow {
+    0% { transform: translateY(0) translateX(0); }
+    100% { transform: translateY(500px) translateX(50px); }
+}
 
-.cloud { position: absolute; top: 20%; width: 80px; height: 50px; background: rgba(255,255,255,0.7); border-radius: 50%; animation: floatCloud linear infinite; }
-@keyframes floatCloud { 0% { transform: translateX(-100px); } 100% { transform: translateX(600px); } }
+.cloud {
+    position: absolute;
+    top: 20%;
+    width: 80px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    animation: floatCloud linear infinite;
+    will-change: transform;
+}
+@keyframes floatCloud {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(600px); }
+}
 
-.lightning { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.5); opacity:0; animation: flash 0.2s ease 0s 1 forwards; }
-@keyframes flash { 0% {opacity:0;} 50%{opacity:1;} 100%{opacity:0;} }
+.lightning {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    animation: flash 0.2s ease 0s 1 forwards;
+    pointer-events: none; /* ⚡ Dili mo-intercept sa clicks */
+}
+@keyframes flash {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
 
-.sun { position: absolute; top:50%; left:50%; width:80px; height:80px; background: radial-gradient(circle, #fff200, #ffc700); border-radius:50%; transform:translate(-50%, -50%); animation: spinSun 10s linear infinite, glowSun 2s ease-in-out infinite alternate; box-shadow: 0 0 30px 10px rgba(255,255,0,0.5); }
-@keyframes spinSun { 0% {transform:translate(-50%, -50%) rotate(0deg);} 100% {transform:translate(-50%, -50%) rotate(360deg);} }
-@keyframes glowSun { 0% {box-shadow:0 0 20px 5px rgba(255,255,0,0.3);} 100% {box-shadow:0 0 40px 20px rgba(255,255,0,0.7);} }
+.sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #fff200, #ffc700);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: spinSun 10s linear infinite, glowSun 2s ease-in-out infinite alternate;
+    box-shadow: 0 0 30px 10px rgba(255, 255, 0, 0.5);
+    will-change: transform, box-shadow;
+}
+@keyframes spinSun {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes glowSun {
+    0% { box-shadow: 0 0 20px 5px rgba(255, 255, 0, 0.3); }
+    100% { box-shadow: 0 0 40px 20px rgba(255, 255, 0, 0.7); }
+}
 
-.wind { position:absolute; width:60px; height:2px; background: rgba(255,255,255,0.5); border-radius:2px; top:50%; animation: moveWind linear infinite; }
-@keyframes moveWind { 0%{transform:translateX(-100px);} 100%{transform:translateX(600px);} }
+.wind {
+    position: absolute;
+    width: 60px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+    top: 50%;
+    animation: moveWind linear infinite;
+    will-change: transform;
+}
+@keyframes moveWind {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(600px); }
+}
+
+/* ⚡ Bag-o: Loading spinner (para sa JS loading state) */
+.loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ⚡ Bag-o: Error message styling */
+.error-message {
+    background: rgba(255, 77, 77, 0.2);
+    border: 1px solid rgba(255, 77, 77, 0.5);
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+/* ⚡ Bag-o: Accessible hidden class (para sa screen readers) */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
 
 /* ---------------- MOBILE ---------------- */
-@media(max-width:600px){
-    .container{max-width:100%; padding:20px;}
-    .search-box{flex-direction:column;}
-    .search-box button{width:100%; font-size:16px; padding:12px;}
-    .search-box input{font-size:16px;}
-    .weather-box h3{font-size:24px;}
-    .weather-box p{font-size:16px;}
-    .icon-wrapper{height:200px;}
+@media (max-width: 600px) {
+    .container {
+        max-width: 100%;
+        padding: 20px;
+    }
+    .search-box {
+        flex-direction: column;
+    }
+    .search-box button {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px;
+    }
+    .search-box input {
+        font-size: 16px;
+    }
+    .weather-box h3 {
+        font-size: 24px;
+    }
+    .weather-box p {
+        font-size: 16px;
+    }
+    .icon-wrapper {
+        height: 200px;
+    }
+}
+
+/* ⚡ Bag-o: Landscape mode sa mobile (kanang horizontal ang phone) */
+@media (max-height: 500px) and (orientation: landscape) {
+    .icon-wrapper {
+        height: 150px;
+    }
+    .container {
+        padding: 15px;
+    }
 }
